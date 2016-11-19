@@ -1,3 +1,5 @@
+require('loud-rejection/register')
+
 require(`babel-polyfill`)
 require(`babel-register`)({
 	plugins: [

@@ -11,14 +11,10 @@ const stat = denodeify(require('fs').stat)
 const path = require('path')
 const resolve = require('url').resolve
 
-const defaultSizes = [
-	{ identifier: '1', width: 320, height: 240 },
-	{ identifier: '2', width: 640, height: 480 },
-]
 
 const cropNorth = Jimp.HORIZONTAL_ALIGN_CENTER | Jimp.VERTICAL_ALIGN_TOP
 
-module.exports = function makeDownloader({ outputDirectory, urlPrefix, skipIfExists = true, sizes = defaultSizes }) {
+module.exports = function makeDownloader({ outputDirectory, urlPrefix, skipIfExists = true, sizes }) {
 	const sizesPromise = pMap(sizes, async ({ identifier, width, height }) => {
 		const directory = path.join(outputDirectory, identifier)
 		await mkdirp(directory)
@@ -31,6 +27,7 @@ module.exports = function makeDownloader({ outputDirectory, urlPrefix, skipIfExi
 	})
 
 	return async function saveFile(susdPath) {
+		console.log('called with', susdPath)
 		const outputFilename = sanitizeFilename(susdPath)
 
 		const sizes = await sizesPromise
@@ -52,6 +49,7 @@ module.exports = function makeDownloader({ outputDirectory, urlPrefix, skipIfExi
 		if (needToDownload) {
 			const url = resolve(urlPrefix, susdPath)
 			console.log('downloading', url)
+
 			const data = await download(url)
 
 			await pMap(imagesThatNeedToBeCreated, ({ width, height, outputPath }) => {
@@ -68,7 +66,10 @@ module.exports = function makeDownloader({ outputDirectory, urlPrefix, skipIfExi
 
 function resize({ data, width, height, outputPath }) {
 	return Jimp.read(data).then(image => {
-		return denodeify(image.cover(width, height, cropNorth).write(outputPath))
+		const jimpResizedImage = image.cover(width, height, cropNorth)
+		const writeImage = denodeify(jimpResizedImage.write.bind(jimpResizedImage))
+
+		return writeImage(outputPath)
 	})
 }
 
