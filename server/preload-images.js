@@ -23,7 +23,7 @@ module.exports = function preload({ queue, getImage }) {
 			if (images.length > 0) {
 				const nextImage = images.shift()
 				leftToCheck = images.length
-				queue.add(() => getImage(nextImage))
+				getImage(nextImage)
 			}
 		}
 
