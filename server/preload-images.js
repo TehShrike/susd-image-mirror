@@ -9,18 +9,42 @@ async function downloadImagePathsFromSusdPage(url) {
 }
 
 module.exports = function preload({ queue, getImage }) {
+	let total = 'unknown'
+	let leftToCheck = 'unknown'
+
 	Promise.all([
 		downloadImagePathsFromSusdPage('https://www.shutupandsitdown.com/videos-page/'),
 		downloadImagePathsFromSusdPage('https://www.shutupandsitdown.com/games-page/'),
 	]).then(flatten).then(images => {
+		total = images.length
+		leftToCheck = images.length
+
 		function downloadAnother() {
-			const nextImage = images.shift()
-			queue.add(() => getImage(nextImage))
 			if (images.length > 0) {
-				queue.onEmpty().then(downloadAnother)
+				const nextImage = images.shift()
+				leftToCheck = images.length
+				queue.add(() => getImage(nextImage))
 			}
 		}
 
-		downloadAnother()
+		function downloadMore() {
+			times(4, downloadAnother)
+
+			if (images.length > 0) {
+				queue.onEmpty().then(downloadMore)
+			}
+		}
+
+		downloadMore()
 	})
+
+	return function getStatusString() {
+		return `Queued ${total - leftToCheck} of ${total} image checks`
+	}
+}
+
+function times(number, fn) {
+	for (let i = 0; i < number; ++i) {
+		fn()
+	}
 }
