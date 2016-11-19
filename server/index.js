@@ -48,7 +48,7 @@ router.get('/:sizeIdentifier(1|2)/:imageUrl(.*)', async function(context, next) 
 })
 
 function setHeaders(response) {
-	response.setHeader('Cache-Control', 'public, must-revalidate')
+	response.setHeader('Cache-Control', 'public')
 	response.setHeader('Last-Modified', lastModifiedValue)
 }
 
