@@ -28,6 +28,7 @@
     "just-flatten": "1.0.0",
     "key-master": "2.0.1",
     "koa": "2.0.0-alpha.7",
+    "koa-conditional-get": "2.0.0",
     "koa-router": "7.0.1",
     "koa-send": "3.2.0",
     "level-mem": "0.18.0",

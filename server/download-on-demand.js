@@ -26,14 +26,16 @@ const imageDownloader = createImageDownloader({
 
 const imageDownloaderCallback = nodeify(imageDownloader)
 
-function downloadedImagePathFactory(susdImagePath) {
-	const promise = denodeify(gateKeeper(cb => imageDownloaderCallback(susdImagePath, cb)))()
+module.exports = function makeDownloadingPathGetter(downloadQueue) {
+	const imagePaths = keyMaster(susdImagePath => {
+		const promise = downloadQueue.add(() => imageDownloader(susdImagePath))
 
-	return promise
-}
+		promise.catch(() => imagePaths.delete(susdImagePath))
 
-const imagePaths = keyMaster(downloadedImagePathFactory)
+		return promise
+	})
 
-module.exports = function getImagePath(susdImagePath) {
-	return imagePaths.get(susdImagePath)
+	return function getImagePath(susdImagePath) {
+		return imagePaths.get(susdImagePath)
+	}
 }

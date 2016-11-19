@@ -27,7 +27,7 @@ module.exports = function makeDownloader({ outputDirectory, urlPrefix, skipIfExi
 	})
 
 	return async function saveFile(susdPath) {
-		console.log('called with', susdPath)
+		console.log('saveFile called with', susdPath)
 		const outputFilename = sanitizeFilename(susdPath)
 
 		const sizes = await sizesPromise

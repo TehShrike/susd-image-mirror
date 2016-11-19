@@ -7,4 +7,4 @@ require(`babel-register`)({
 	]
 })
 
-require('./index').listen(process.env.PORT || 8889)
+require('./server/index').listen(process.env.PORT || 8889)
