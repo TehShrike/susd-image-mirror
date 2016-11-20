@@ -23,7 +23,7 @@ module.exports = function preload({ queue, getImage }) {
 			if (images.length > 0) {
 				const nextImage = images.shift()
 				leftToCheck = images.length
-				getImage(nextImage)
+				getImage(stripPrefox(nextImage))
 			}
 		}
 
@@ -47,4 +47,8 @@ function times(number, fn) {
 	for (let i = 0; i < number; ++i) {
 		fn()
 	}
+}
+
+function stripPrefox(url) {
+	return url.substring('https://www.shutupandsitdown.com/wp-content/uploads/'.length)
 }
