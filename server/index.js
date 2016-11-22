@@ -38,8 +38,6 @@ router.get('/:sizeIdentifier(1|2)/:imageUrl(.*)', async function(context, next) 
 
 	const { sizeIdentifier, imageUrl } = context.params
 
-	await next()
-
 	if (context.stale) {
 		const images = await getImagePath(imageUrl)
 		const pathOnDisk = images[sizeIdentifier]
