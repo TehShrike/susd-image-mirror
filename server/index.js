@@ -13,7 +13,7 @@ const preloadImages = require('./preload-images')
 
 const downloadQueue = new PQueue({ concurrency: 5 })
 
-const getImageBuffers = makeDownloadingPathGetter(downloadQueue)
+const getImagePath = makeDownloadingPathGetter(downloadQueue)
 
 const app = new Koa()
 
@@ -23,7 +23,7 @@ const lastModifiedValue = serverStart.toUTCString()
 
 const preloadStatus = preloadImages({
 	queue: downloadQueue,
-	getImage: getImageBuffers
+	getImage: getImagePath
 })
 
 router.get('/status', async function(context) {
@@ -41,13 +41,16 @@ router.get('/:sizeIdentifier(1|2)/:imageUrl(.*)', async function(context, next) 
 	await next()
 
 	if (context.stale) {
-		const images = await getImageBuffers(imageUrl)
-		context.body = images[sizeIdentifier]
-		context.set('Cache-Control', 'public')
-		context.set('Last-Modified', lastModifiedValue)
-		context.set('Content-Type', 'image/jpeg')
+		const images = await getImagePath(imageUrl)
+		const pathOnDisk = images[sizeIdentifier]
+		await send(context, pathOnDisk, { root: '/', setHeaders })
 	}
 })
+
+function setHeaders(response) {
+	response.setHeader('Cache-Control', 'public')
+	response.setHeader('Last-Modified', lastModifiedValue)
+}
 
 app.use(router.routes())
 

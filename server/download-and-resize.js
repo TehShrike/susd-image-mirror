@@ -15,35 +15,68 @@ const resolve = require('url').resolve
 const cropNorth = Jimp.HORIZONTAL_ALIGN_CENTER | Jimp.VERTICAL_ALIGN_TOP
 
 module.exports = function makeDownloader({ outputDirectory, urlPrefix, skipIfExists = true, sizes }) {
-	// sizes: { identifier, width, height }
+	const sizesPromise = pMap(sizes, async ({ identifier, width, height }) => {
+		const directory = path.join(outputDirectory, identifier)
+		await mkdirp(directory)
+		return {
+			directory,
+			identifier,
+			width,
+			height,
+		}
+	})
 
-	return async function downloadFile(susdPath) {
-		const url = resolve(urlPrefix, susdPath)
-		console.log(new Date().toString(), 'downloading', url)
+	return async function saveFile(susdPath) {
+		console.log('saveFile called with', susdPath)
+		const outputFilename = sanitizeFilename(susdPath)
 
-		const data = await download(url)
-
-		const resizedImages = await pMap(sizes, async ({ identifier, width, height }) => {
-			const imageBuffer = await resize({ data, width, height })
-
+		const sizes = await sizesPromise
+		const imagesThatShouldExist = sizes.map(({ directory, identifier, width, height }) => {
 			return {
+				outputPath: path.join(path.join(directory, outputFilename)),
 				identifier,
-				imageBuffer
+				width,
+				height,
 			}
 		})
 
-		return resizedImages.reduce((memo, { imageBuffer, identifier }) => {
-			memo[identifier] = imageBuffer
+		const imagesThatNeedToBeCreated = await (skipIfExists
+			? pFilter(imagesThatShouldExist, ({ outputPath }) => nonzeroFileExists(outputPath).then(exists => !exists))
+			: imagesThatShouldExist)
+
+		const needToDownload = imagesThatNeedToBeCreated.length > 0
+
+		if (needToDownload) {
+			const url = resolve(urlPrefix, susdPath)
+			console.log('downloading', url)
+
+			const data = await download(url)
+
+			await pMap(imagesThatNeedToBeCreated, ({ width, height, outputPath }) => {
+				return resize({ data, width, height, outputPath })
+			})
+		}
+
+		return imagesThatShouldExist.reduce((memo, { outputPath, identifier }) => {
+			memo[identifier] = outputPath
 			return memo
 		}, {})
 	}
 }
 
-function resize({ data, width, height }) {
+function resize({ data, width, height, outputPath }) {
 	return Jimp.read(data).then(image => {
 		const jimpResizedImage = image.cover(width, height, cropNorth)
-		const getBuffer = denodeify(jimpResizedImage.getBuffer.bind(jimpResizedImage))
+		const writeImage = denodeify(jimpResizedImage.write.bind(jimpResizedImage))
 
-		return getBuffer(Jimp.MIME_JPEG)
+		return writeImage(outputPath)
+	})
+}
+
+function nonzeroFileExists(path) {
+	return stat(path).then(stats => {
+		return !!stats.size
+	}).catch(err => {
+		return false
 	})
 }

@@ -15,7 +15,11 @@ const sizes = [
 
 const createImageDownloader = require('./download-and-resize')
 
+const imagePath = path.join(tmpDir(), 'susd-images')
+console.log('Downloading to', imagePath)
+
 const imageDownloader = createImageDownloader({
+	outputDirectory: imagePath,
 	urlPrefix: 'https://www.shutupandsitdown.com/wp-content/uploads/',
 	sizes
 })
@@ -31,7 +35,7 @@ module.exports = function makeDownloadingPathGetter(downloadQueue) {
 		return promise
 	})
 
-	return function getImageBuffers(susdImagePath) {
+	return function getImagePath(susdImagePath) {
 		return imagePaths.get(susdImagePath)
 	}
 }
