@@ -2,6 +2,9 @@
   "name": "susd-image-mirror",
   "private": true,
   "version": "1.0.0",
+  "engines": {
+    "node" : ">=7.6.0"
+  },
   "description": "Mirror resized versions of Shut Up & Sit Down's images",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -19,15 +22,12 @@
   },
   "homepage": "https://github.com/TehShrike/susd-image-mirror#readme",
   "dependencies": {
-    "babel-plugin-transform-async-to-generator": "6.16.0",
-    "babel-polyfill": "6.16.0",
-    "babel-register": "6.16.3",
     "download": "5.0.2",
     "gate-keeper": "1.2.0",
     "jimp": "0.2.27",
     "just-flatten": "1.0.0",
     "key-master": "2.0.1",
-    "koa": "2.0.0-alpha.7",
+    "koa": "2.1.0",
     "koa-conditional-get": "2.0.0",
     "koa-router": "7.0.1",
     "koa-send": "3.2.0",
