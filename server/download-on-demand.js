@@ -1,10 +1,6 @@
 const path = require('path')
 
-const gateKeeper = require('gate-keeper')
 const keyMaster = require('key-master')
-
-const nodeify = require('then-nodeify')
-const denodeify = require('then-denodeify')
 
 const tmpDir = require('os-tmpdir')
 
@@ -21,10 +17,8 @@ console.log('Downloading to', imagePath)
 const imageDownloader = createImageDownloader({
 	outputDirectory: imagePath,
 	urlPrefix: 'https://www.shutupandsitdown.com/wp-content/uploads/',
-	sizes
+	sizes,
 })
-
-const imageDownloaderCallback = nodeify(imageDownloader)
 
 module.exports = function makeDownloadingPathGetter(downloadQueue) {
 	const imagePaths = keyMaster(susdImagePath => {

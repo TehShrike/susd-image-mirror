@@ -3,9 +3,6 @@ const send = require('koa-send')
 const conditionalGet = require('koa-conditional-get')
 const router = require('koa-router')()
 
-const nodeify = require('then-nodeify')
-const denodeify = require('then-denodeify')
-
 const PQueue = require('p-queue')
 
 const makeDownloadingPathGetter = require('./download-on-demand')
@@ -23,7 +20,7 @@ const lastModifiedValue = serverStart.toUTCString()
 
 const preloadStatus = preloadImages({
 	queue: downloadQueue,
-	getImage: getImagePath
+	getImage: getImagePath,
 })
 
 router.get('/status', async function(context) {

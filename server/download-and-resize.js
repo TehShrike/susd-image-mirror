@@ -6,7 +6,6 @@ const pMap = require('p-map')
 const pFilter = require('p-filter')
 const Jimp = require('jimp')
 
-const http = require('http')
 const stat = denodeify(require('fs').stat)
 const path = require('path')
 const resolve = require('url').resolve
