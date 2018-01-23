@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "engines": {
-    "node" : ">=7.6.0"
+    "node": ">=7.6.0"
   },
   "description": "Mirror resized versions of Shut Up & Sit Down's images",
   "scripts": {
@@ -24,6 +24,7 @@
   "dependencies": {
     "download": "5.0.2",
     "gate-keeper": "1.2.0",
+    "hard-rejection": "^1.0.0",
     "jimp": "0.2.27",
     "just-flatten": "1.0.0",
     "key-master": "2.0.1",
@@ -33,7 +34,7 @@
     "koa-send": "3.2.0",
     "level-mem": "0.18.0",
     "levelup-cache": "2.3.0",
-    "loud-rejection": "1.6.0",
+    "loud-rejection": "^1.6.0",
     "mkdirp": "0.5.1",
     "os-tmpdir": "1.0.2",
     "p-filter": "1.0.0",

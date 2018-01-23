@@ -1,3 +1,6 @@
+require(`loud-rejection`)()
+require(`hard-rejection`)()
+
 const Koa = require(`koa`)
 const send = require(`koa-send`)
 const conditionalGet = require(`koa-conditional-get`)
