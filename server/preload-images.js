@@ -1,20 +1,25 @@
-const download = require('download')
-const flatten = require('just-flatten')
-const pageParser = require('susd-page-parser')
+const download = require(`download`)
+const flatten = require(`just-flatten`)
+const pageParser = require(`susd-page-parser`)
 
 async function downloadImagePathsFromSusdPage(url) {
-	const html = await download(url)
+	try {
+		const html = await download(url)
 
-	return pageParser(html).map(({ imageUrl }) => imageUrl)
+		return pageParser(html).map(({ imageUrl }) => imageUrl)
+	} catch (err) {
+		console.error(`Error downloading ${ url }`)
+		throw err
+	}
 }
 
 module.exports = function preload({ queue, getImage }) {
-	let total = 'unknown'
-	let leftToCheck = 'unknown'
+	let total = `unknown`
+	let leftToCheck = `unknown`
 
 	Promise.all([
-		downloadImagePathsFromSusdPage('https://www.shutupandsitdown.com/videos-page/'),
-		downloadImagePathsFromSusdPage('https://www.shutupandsitdown.com/games-page/'),
+		downloadImagePathsFromSusdPage(`https://www.shutupandsitdown.com/videos-page/`),
+		downloadImagePathsFromSusdPage(`https://www.shutupandsitdown.com/games-page/`),
 	]).then(flatten).then(images => {
 		total = images.length
 		leftToCheck = images.length
@@ -39,7 +44,7 @@ module.exports = function preload({ queue, getImage }) {
 	})
 
 	return function getStatusString() {
-		return `Queued ${total - leftToCheck} of ${total} image checks`
+		return `Queued ${ total - leftToCheck } of ${ total } image checks`
 	}
 }
 
@@ -50,5 +55,5 @@ function times(number, fn) {
 }
 
 function stripPrefox(url) {
-	return url.substring('https://www.shutupandsitdown.com/wp-content/uploads/'.length)
+	return url.substring(`https://www.shutupandsitdown.com/wp-content/uploads/`.length)
 }
