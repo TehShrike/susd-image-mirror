@@ -6,7 +6,7 @@ const router = require('koa-router')()
 const PQueue = require('p-queue')
 
 const makeDownloadingPathGetter = require('./download-on-demand')
-const preloadImages = require('./preload-images')
+// const preloadImages = require('./preload-images')
 
 const downloadQueue = new PQueue({ concurrency: 5 })
 
@@ -18,14 +18,14 @@ const serverStart = new Date()
 const etagValue = serverStart.valueOf()
 const lastModifiedValue = serverStart.toUTCString()
 
-const preloadStatus = preloadImages({
-	queue: downloadQueue,
-	getImage: getImagePath,
-})
+// const preloadStatus = preloadImages({
+// 	queue: downloadQueue,
+// 	getImage: getImagePath,
+// })
 
-router.get('/status', async function(context) {
-	context.body = preloadStatus()
-})
+// router.get('/status', async function(context) {
+// 	context.body = preloadStatus()
+// })
 
 app.use(conditionalGet())
 

@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "engines": {
-    "node" : ">=7.6.0"
+    "node": ">=7.6.0"
   },
   "description": "Mirror resized versions of Shut Up & Sit Down's images",
   "scripts": {
