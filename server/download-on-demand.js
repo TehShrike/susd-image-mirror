@@ -29,7 +29,12 @@ module.exports = function makeDownloadingPathGetter(downloadQueue) {
 		return promise
 	})
 
-	return function getImagePath(susdImagePath) {
-		return imagePaths.get(susdImagePath)
+	const getImagePath = susdImagePath => imagePaths.get(susdImagePath)
+
+	const filesInMemory = () => Object.keys(imagePaths.getUnderlyingDataStructure()).length
+
+	return {
+		getImagePath,
+		filesInMemory,
 	}
 }

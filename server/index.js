@@ -13,7 +13,10 @@ const makeDownloadingPathGetter = require(`./download-on-demand`)
 
 const downloadQueue = new PQueue({ concurrency: 5 })
 
-const getImagePath = makeDownloadingPathGetter(downloadQueue)
+const {
+	getImagePath,
+	filesInMemory,
+} = makeDownloadingPathGetter(downloadQueue)
 
 const app = new Koa()
 
@@ -26,9 +29,9 @@ const lastModifiedValue = serverStart.toUTCString()
 // 	getImage: getImagePath,
 // })
 
-// router.get(`/status`, async context => {
-// 	context.body = preloadStatus()
-// })
+router.get(`/status`, async context => {
+	context.body = `Server online with ${filesInMemory()} files in memory`
+})
 
 app.use(conditionalGet())
 
