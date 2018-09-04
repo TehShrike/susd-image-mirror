@@ -33,6 +33,10 @@ router.get(`/status`, async context => {
 	context.body = `Server online with ${filesInMemory()} files in memory`
 })
 
+router.get('/robots.txt', async context => {
+	context.body = process.env.UP_STAGE === 'production' ? '' : `User-agent: *\nDisallow: /\n`
+})
+
 app.use(conditionalGet())
 
 router.get(`/:sizeIdentifier(1|2)/:imageUrl(.*)`, async(context, next) => {
