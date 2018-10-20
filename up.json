@@ -17,7 +17,7 @@
 			"domain": "images.susdsearch.com",
 			"lambda": {
 				"warm": true,
-				"warm_count": 2,
+				"warm_count": 5,
 				"runtime": "nodejs8.10"
 			}
 		}
