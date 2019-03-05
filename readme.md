@@ -1,3 +1,7 @@
+# This server is deprecated
+
+All image resizing happens via CI in the [main repo](https://github.com/TehShrike/susd-search-site) now.
+
 # To run/develop locally
 
 [Node](https://nodejs.org/) 6 required.
